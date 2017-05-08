@@ -3,6 +3,7 @@ const app = express();
 const logger = require('./lib/utils/logger').Logger;
 const db = require('./lib/database/mongo_db');
 const auth = require('./lib/routers/authenticated.js');
+const qr = require('./lib/barcode/barcodeGen');
 
 const PORT = 9000;
 
@@ -19,6 +20,10 @@ app.all('/', (req, res) => {
 app.get('/ready', (req, res) => {
   res.status(200);
   res.end('app is working');
+});
+
+app.get('/barcode/:code', (req, res) => {
+  res.end(qr.getQRCode(req.params.code));
 });
 
 app.listen(PORT, () => {
