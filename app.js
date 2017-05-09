@@ -8,7 +8,6 @@ const qr = require('./lib/barcode/barcodeGen');
 const PORT = 9000;
 
 
-
 app.use('/customers', require('./lib/routes/customers')(auth(), db));
 
 app.all('/', (req, res) => {
@@ -23,7 +22,14 @@ app.get('/ready', (req, res) => {
 });
 
 app.get('/barcode/:code', (req, res) => {
-  res.end(qr.getQRCode(req.params.code));
+  res.writeHead(200, { 'Content-Type': 'image/jpeg' });
+  qr.getQRCode(req.params.code)
+  .then((output) => {
+    res.end(output);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 });
 
 app.listen(PORT, () => {
